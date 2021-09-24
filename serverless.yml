@@ -1,0 +1,43 @@
+service: aws-node-http-api-project-stefanini
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: '20201221'
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:stage, 'us-east-1'}
+  memorySize: 256
+  timeout: 3
+
+functions:
+  funcionariocriar:
+    handler: functions/funcionarios/criar.handler
+    events:
+      - httpApi:
+          path: /funcionarios
+          method: post
+  funcionarioatualizar:
+    handler: functions/funcionarios/atualizar.handler
+    events:
+      - httpApi:
+          path: /funcionarios/{id}
+          method: put
+  funcionarioexcluir:
+    handler: functions/funcionarios/excluir.handler
+    events:
+      - httpApi:
+          path: /funcionarios/{id}
+          method: delete
+  funcionariobuscar:
+    handler: functions/funcionarios/buscar.handler
+    events:
+      - httpApi:
+          path: /funcionarios/{id}
+          method: get
+  funcionariolistar:
+    handler: functions/funcionarios/listar.handler
+    events:
+      - httpApi:
+          path: /funcionarios
+          method: get

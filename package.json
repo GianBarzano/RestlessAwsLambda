@@ -1,0 +1,11 @@
+{
+  "name": "aws-node-http-api-project-stefanini",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "deploy": "serverless deploy -v"
+  },
+  "keywords": [],
+  "author": "Gian Barzano",
+  "license": "ISC"
+}
