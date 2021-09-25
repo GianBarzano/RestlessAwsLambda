@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "deploy": "serverless deploy -v"
+    "deploy": "serverless deploy -v",
+    "srv-remove": "serverless remove"
   },
   "keywords": [],
   "author": "Gian Barzano",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "node-uuid": "^1.4.8"
+  }
 }
