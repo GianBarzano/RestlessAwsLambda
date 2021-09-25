@@ -4,12 +4,16 @@
   "description": "",
   "scripts": {
     "deploy": "serverless deploy -v",
-    "srv-remove": "serverless remove"
+    "srv-remove": "serverless remove",
+    "test": "jest"
   },
   "keywords": [],
   "author": "Gian Barzano",
   "license": "ISC",
   "dependencies": {
     "node-uuid": "^1.4.8"
+  },
+  "devDependencies": {
+    "jest": "^27.2.2"
   }
 }
