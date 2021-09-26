@@ -188,6 +188,33 @@ describe('Falha', () => {
     });
   })
 
+  test('Deve retornar 404', () => {
+    // Crio mock da função atualizar do model de funcionario para retornar erro não encontrado
+    funcionarioModel.atualizar.mockImplementation((funcionario) => Promise.reject('nao-encontrado'));
+
+    // Realizo chamada a função
+    const funcionarioReq = {
+      id: 'xpto',
+      nome: 'Maria',
+      cargo: 'Analista',
+      idade: 20
+    };
+    const event = {
+      body: JSON.stringify(funcionarioReq),
+      pathParameters: {
+        id: funcionarioReq.id
+      }
+    };
+    const context = {}
+    return handler(event, context).then((retorno) => {
+      // Retorno 404
+      expect(retorno).toBeDefined();
+      expect(retorno).not.toBeNull();
+      expect(retorno.statusCode).toBe(404);
+      expect(funcionarioModel.atualizar.mock.calls.length).toBe(1);
+    });
+  })
+
   afterEach(() => {
     // Limpo mock de atualizar
     funcionarioModel.atualizar.mockReset();

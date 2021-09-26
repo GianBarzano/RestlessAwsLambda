@@ -106,7 +106,6 @@ describe('Validação de formulário', () => {
 
   afterAll(() => {
     funcionarioModel.criar.mockReset();
-    //mockClear, mockRestore
   })
 })
 
