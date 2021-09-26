@@ -1,14 +1,14 @@
 const { test, describe, beforeAll, expect, afterEach } = require("@jest/globals");
 
-const { handler } = require("../../../functions/funcionarios/criar");
+const { handler } = require("../../../functions/funcionarios/atualizar");
 const funcionarioModel = require("../../../model/funcionarioModel");
 
 jest.mock('../../../model/funcionarioModel');
 
 describe('Validação de formulário', () => {
   beforeAll(() => {
-    // Antes de todos os testes, crio mock da função criar do model de funcionario
-    funcionarioModel.criar.mockImplementation((funcionario) => Promise.resolve(funcionario));
+    // Antes de todos os testes, crio mock da função atualizar do model de funcionario
+    funcionarioModel.atualizar.mockImplementation((funcionario) => Promise.resolve(funcionario));
   })
 
   test('Retornar 400 ao nao informar dados', () => {
@@ -23,7 +23,7 @@ describe('Validação de formulário', () => {
       expect(retorno).not.toBeNull();
       expect(retorno.statusCode).toBe(400);
       // Model nao pode ser chamado por causa de validação de formulário
-      expect(funcionarioModel.criar.mock.calls.length).toBe(0);
+      expect(funcionarioModel.atualizar.mock.calls.length).toBe(0);
     });
   });
 
@@ -42,7 +42,7 @@ describe('Validação de formulário', () => {
       expect(retorno).not.toBeNull();
       expect(retorno.statusCode).toBe(400);
       // Model nao pode ser chamado por causa de validação de formulário
-      expect(funcionarioModel.criar.mock.calls.length).toBe(0);
+      expect(funcionarioModel.atualizar.mock.calls.length).toBe(0);
     });
   });
 
@@ -61,7 +61,7 @@ describe('Validação de formulário', () => {
       expect(retorno).not.toBeNull();
       expect(retorno.statusCode).toBe(400);
       // Model nao pode ser chamado por causa de validação de formulário
-      expect(funcionarioModel.criar.mock.calls.length).toBe(0);
+      expect(funcionarioModel.atualizar.mock.calls.length).toBe(0);
     });
   })
 
@@ -80,7 +80,7 @@ describe('Validação de formulário', () => {
       expect(retorno).not.toBeNull();
       expect(retorno.statusCode).toBe(400);
       // Model nao pode ser chamado por causa de validação de formulário
-      expect(funcionarioModel.criar.mock.calls.length).toBe(0);
+      expect(funcionarioModel.atualizar.mock.calls.length).toBe(0);
     });
   })
 
@@ -100,38 +100,42 @@ describe('Validação de formulário', () => {
       expect(retorno).not.toBeNull();
       expect(retorno.statusCode).toBe(400);
       // Model nao pode ser chamado por causa de validação de formulário
-      expect(funcionarioModel.criar.mock.calls.length).toBe(0);
+      expect(funcionarioModel.atualizar.mock.calls.length).toBe(0);
     });
   });
 
   afterAll(() => {
-    funcionarioModel.criar.mockReset();
+    funcionarioModel.atualizar.mockReset();
     //mockClear, mockRestore
   })
 })
 
 describe('Sucesso', () => {
   beforeAll(() => {
-    // Crio mock da função criar do model de funcionario para retornar funcionario
-    funcionarioModel.criar.mockImplementation((funcionario) => Promise.resolve(funcionario));
+    // Crio mock da função atualizar do model de funcionario para retornar funcionario
+    funcionarioModel.atualizar.mockImplementation((funcionario) => Promise.resolve(funcionario));
   })
 
-  test('Deve retornar 201', () => {
+  test('Deve retornar 200', () => {
     // Realizo chamada a função
     const funcionarioReq = {
+      id: 'xpto',
       nome: 'Maria',
       cargo: 'Analista',
       idade: 20
     };
     const event = {
-      body: JSON.stringify(funcionarioReq)
+      body: JSON.stringify(funcionarioReq),
+      pathParameters: {
+        id: funcionarioReq.id
+      }
     };
     const context = {}
     return handler(event, context).then((retorno) => {
-      // Retorno 201
+      // Retorno 200
       expect(retorno).toBeDefined();
       expect(retorno).not.toBeNull();
-      expect(retorno.statusCode).toBe(201);
+      expect(retorno.statusCode).toBe(200);
       // Corpo do retorno
       expect(retorno.body).toBeDefined();
       expect(retorno.body).not.toBeNull();
@@ -141,6 +145,7 @@ describe('Sucesso', () => {
       expect(retornoBodyParsed).not.toBeNull();
       expect(retornoBodyParsed.funcionario).toBeDefined();
       expect(retornoBodyParsed.funcionario).not.toBeNull();
+      expect(retornoBodyParsed.funcionario.id).toBe(funcionarioReq.id);
       expect(retornoBodyParsed.funcionario.nome).toBe(funcionarioReq.nome);
       expect(retornoBodyParsed.funcionario.cargo).toBe(funcionarioReq.cargo);
       expect(retornoBodyParsed.funcionario.idade).toBe(funcionarioReq.idade);
@@ -148,25 +153,30 @@ describe('Sucesso', () => {
   })
 
   afterEach(() => {
-    // Limpo mock de criar
-    funcionarioModel.criar.mockReset();
+    // Limpo mock de atualizar
+    funcionarioModel.atualizar.mockReset();
   })
 })
 
 describe('Falha', () => {
   beforeAll(() => {
-    // Crio mock da função criar do model de funcionario para retornar erro
-    funcionarioModel.criar.mockImplementation((funcionario) => Promise.reject());
+    // Crio mock da função atualizar do model de funcionario para retornar erro
+    funcionarioModel.atualizar.mockImplementation((funcionario) => Promise.reject());
   })
 
   test('Deve retornar 500', () => {
     // Realizo chamada a função
+    const funcionarioReq = {
+      id: 'xpto',
+      nome: 'Maria',
+      cargo: 'Analista',
+      idade: 20
+    };
     const event = {
-      body: JSON.stringify({
-        nome: 'Maria',
-        cargo: 'Analista',
-        idade: 20
-      })
+      body: JSON.stringify(funcionarioReq),
+      pathParameters: {
+        id: funcionarioReq.id
+      }
     };
     const context = {}
     return handler(event, context).then((retorno) => {
@@ -174,12 +184,12 @@ describe('Falha', () => {
       expect(retorno).toBeDefined();
       expect(retorno).not.toBeNull();
       expect(retorno.statusCode).toBe(500);
-      expect(funcionarioModel.criar.mock.calls.length).toBe(1);
+      expect(funcionarioModel.atualizar.mock.calls.length).toBe(1);
     });
   })
 
   afterEach(() => {
-    // Limpo mock de criar
-    funcionarioModel.criar.mockReset();
+    // Limpo mock de atualizar
+    funcionarioModel.atualizar.mockReset();
   })
 })
