@@ -1,8 +1,15 @@
 // Interface de integração com AWS
 const AWS = require('aws-sdk');
 // Interface de integração com DynamoDB
-const dynamodb = new AWS.DynamoDB.DocumentClient();
+let dynamodb = null; 
 
+getDynamoDB = () => {
+  if (!dynamodb) {
+    dynamodb = new AWS.DynamoDB.DocumentClient();
+  }
+
+  return dynamodb;
+}
 /**
  * Cria um registro na tabela do banco de dados
  */
@@ -16,7 +23,7 @@ module.exports.criar = (tabela, dados) => {
       };
 
       // Busco registros no banco de dados
-      await dynamodb.put(paramsDB).promise();
+      await getDynamoDB().put(paramsDB).promise();
       
       // Retorno registros
       resolve();
@@ -69,7 +76,7 @@ module.exports.atualizar = (tabela, dados, campoId = 'id') => {
       paramsDB['ConditionExpression'] = `${campoId} = :${campoId}`;
 
       // Atualizo registro no banco de dados
-      await dynamodb.update(paramsDB).promise();
+      await getDynamoDB().update(paramsDB).promise();
       
       // Retorno sucesso
       resolve();
@@ -113,7 +120,7 @@ module.exports.listar = (tabela, configPag = {}, campoId = 'id') => {
       }
 
       // Busco registros no banco de dados
-      const dynamoData = await dynamodb.scan(paramsDB).promise();
+      const dynamoData = await getDynamoDB().scan(paramsDB).promise();
       
       // Converto retorno para formato utilizado no sistema
       const dados = {
@@ -155,7 +162,7 @@ module.exports.excluir = (tabela, id, campoId = 'id') => {
       paramsDB['ExpressionAttributeValues'][`:${campoId}`] = id;
 
       // Excluo registro no banco de dados
-      await dynamodb.delete(paramsDB).promise();
+      await getDynamoDB().delete(paramsDB).promise();
 
       // Retorno sucesso
       resolve();
@@ -187,7 +194,7 @@ module.exports.buscar = (tabela, id, campoId = 'id') => {
       paramsDB['Key'][campoId] = id;
 
       // Busco registros no banco de dados
-      const dynamoData = await dynamodb.get(paramsDB).promise();
+      const dynamoData = await getDynamoDB().get(paramsDB).promise();
       
       if (dynamoData.Item) {
         // Retorno registros
