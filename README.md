@@ -113,6 +113,13 @@ Projeto Serverless Framework implementando um AWS Lambda, acessado atravez de um
     $ serverless config credentials -o --provider aws --key=USER_AWS_KEY --secret USER_AWS_SECRET
     ```
 
+### Dependencias
+Para instalar as dependências, rode o comando abaixo.
+
+```
+$ npm install
+```
+
 ### Deploy
 
 ```
