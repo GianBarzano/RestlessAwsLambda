@@ -68,11 +68,11 @@ module.exports.atualizar = (tabela, dados, campoId = 'id') => {
       paramsDB['Key'][campoId] = dados.id;
       paramsDB['ConditionExpression'] = `${campoId} = :${campoId}`;
 
-      // Busco registros no banco de dados
-      const dynamoData = await dynamodb.update(paramsDB).promise();
+      // Atualizo registro no banco de dados
+      await dynamodb.update(paramsDB).promise();
       
-      // Retorno registro
-      resolve(dynamoData);
+      // Retorno sucesso
+      resolve();
     } catch (error) {
       if (error && error.code == 'ConditionalCheckFailedException') {
         reject('nao-encontrado');

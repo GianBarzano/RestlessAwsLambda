@@ -32,11 +32,11 @@ module.exports.criar = (funcionario) => {
 module.exports.atualizar = (funcionario) => {
   return new Promise(async (resolve, reject) => {
     try {
-      // Crio funcionário no banco de dados
-      let funcionarioNovo = await atualizar(tabelaDB, funcionario);
+      // Atualizo funcionário no banco de dados
+      await atualizar(tabelaDB, funcionario);
 
       // Retorno funcionário atualizado
-      resolve(funcionarioNovo);
+      resolve(funcionario);
     } catch (error) {
       reject(error);
     }
@@ -49,7 +49,7 @@ module.exports.atualizar = (funcionario) => {
 module.exports.listar = (qryParams = {}) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let configPag = {}
+      let configPag = {};
 
       if (qryParams.lastqryid) {
         configPag.lastqryid = qryParams.lastqryid;
