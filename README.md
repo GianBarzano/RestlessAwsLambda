@@ -1,30 +1,125 @@
-<!--
-title: 'AWS Simple HTTP Endpoint example in NodeJS'
-description: 'This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.'
-layout: Doc
-framework: v2
-platform: AWS
-language: nodeJS
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
-
 # Serverless Framework Node HTTP API on AWS
 
-This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.
-
-This template does not include any kind of persistence (database). For more advanced examples, check out the [serverless/examples repository](https://github.com/serverless/examples/) which includes Typescript, Mongo, DynamoDB and other examples.
+Projeto Serverless Framework implementando um AWS Lambda, acessado atravez de um API Gatway, para realizar um CRUD de funcionários.
 
 ## Usage
+### Recursos da API.
+  - Cadastro de funcionários:
+    - Requisição:
+      - Endpoint: "/funcionarios"
+      - Method: POST
+      - Corpo
+        ```
+        {
+          idade: Integer,
+          nome: String,
+          cargo: String
+        }
+        ```
+    - Resposta:
+      - Status: 201
+      - Corpo:
+        ```
+        {
+          funcionario: {
+            id: String
+            idade: Integer,
+            nome: String,
+            cargo: String
+          }
+        }
+        ```
 
-### Deployment
+  - Atualização de funcionários:
+    - Requisição:
+      - Endpoint: "/funcionarios/{id}"
+      - Method: PUT
+      - Corpo
+        ```
+        {
+          id: String,
+          idade: Integer,
+          nome: String,
+          cargo: String
+        }
+        ```
+    - Resposta:
+      - Status: 200
+      - Corpo:
+        ```
+        {
+          funcionario: {
+            id: String
+            idade: Integer,
+            nome: String,
+            cargo: String
+          }
+        }
+        ```
+  - Busca de funcionário:
+    - Requisição:
+      - Endpoint: "/funcionarios/{id}"
+      - Method: GET
+    - Resposta:
+      - Status: 200
+      - Corpo:
+        ```
+        {
+          funcionario: {
+            id: String
+            idade: Integer,
+            nome: String,
+            cargo: String
+          }
+        }
+        ```
+  - Excluir funcionário:
+    - Requisição:
+      - Endpoint: "/funcionarios/{id}"
+      - Method: DELETE
+    - Resposta:
+      - Status: 200
+  - Listagem de funcionários:
+    - Requisição:
+      - Endpoint: "/funcionarios"
+      - Method: GET
+      - Query Parameters:
+        - lastqryid: String.(Passado quando não foram retornados todos os registros. Utilizado para paginação)
+    - Resposta:
+      - Status: 200
+      - Corpo:
+        ```
+        {
+          dados: {
+            lista: [{
+              id: String
+              idade: Integer,
+              nome: String,
+              cargo: String
+            }](Listagem de dados),
+            count: Integer(Quantidade de itens retornados),
+            lastqryid: String(Quando retornado, existem mais itens a serem listados)
+          }
+        }
+        ```
+
+### Configurar credenciais da AWS
+  - Instale serverless globalmente: 
+    ```
+    $ npm i -g serverless
+    ```
+  - Configurar credenciais
+    ```
+    $ serverless config credentials -o --provider aws --key=USER_AWS_KEY --secret USER_AWS_SECRET
+    ```
+
+### Deploy
 
 ```
-$ serverless deploy
+$ npm run deploy
 ```
 
-After deploying, you should see output similar to:
+Após rodar o comando, o terminal deve imprimir ficar parecido com o exemplo abaixo:
 
 ```bash
 Serverless: Packaging service...
@@ -57,57 +152,15 @@ layers:
   None
 ```
 
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [http event docs](https://www.serverless.com/framework/docs/providers/aws/events/apigateway/).
+### Testes
 
-### Invocation
-
-After successful deployment, you can call the created application via HTTP:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
+Para executar os testes, rode o comando abaixo.
+```
+$ npm run test
 ```
 
-Which should result in response similar to the following (removed `input` content for brevity):
-
-```json
-{
-  "message": "Go Serverless v2.0! Your function executed successfully!",
-  "input": {
-    ...
-  }
-}
-```
-
-### Local development
-
-You can invoke your function locally by using the following command:
-
-```bash
-serverless invoke local --function hello
-```
-
-Which should result in response similar to the following:
+Caso deseje rotar um arquivo de testes específico, rode passe o nome por parâmetro, conforme exemplo abaixo.
 
 ```
-{
-  "statusCode": 200,
-  "body": "{\n  \"message\": \"Go Serverless v2.0! Your function executed successfully!\",\n  \"input\": \"\"\n}"
-}
+$ npm run test -- utilitarios.test.js
 ```
-
-
-Alternatively, it is also possible to emulate API Gateway and Lambda locally by using `serverless-offline` plugin. In order to do that, execute the following command:
-
-```bash
-serverless plugin install -n serverless-offline
-```
-
-It will add the `serverless-offline` plugin to `devDependencies` in `package.json` file as well as will add it to `plugins` in `serverless.yml`.
-
-After installation, you can start local emulation with:
-
-```
-serverless offline
-```
-
-To learn more about the capabilities of `serverless-offline`, please refer to its [GitHub repository](https://github.com/dherault/serverless-offline).
