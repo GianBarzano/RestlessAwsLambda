@@ -1,8 +1,8 @@
 # Serverless Framework Node HTTP API on AWS
 
-Projeto Serverless Framework implementando um AWS Lambda, acessado atravez de um API Gatway, para realizar um CRUD de funcionários.
+Projeto Serverless Framework implementando um AWS Lambda, acessado atravez de um API Gatway, para realizar um CRUD de funcionários. Os dados estão sendo persistidos utilizando DynamoDB da AWS.
 
-## Usage
+## Utilização
 ### Recursos da API.
   - Cadastro de funcionários:
     - Requisição:
