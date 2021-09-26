@@ -18,13 +18,19 @@ module.exports.handler = async (event, context) => {
       }); 
     }
 
+    if (!Number.isInteger(idade)){
+      return createResponse(400, {
+        message: 'A idade deve ser um inteiro!'
+      }); 
+    }
+
     // Crio funcionário no banco de dados
     const funcionarioReq = {
       idade,
       nome,
       cargo
     }
-
+    
     const funcionarioCriado = await criar(funcionarioReq);
 
     // Retorno resposta
